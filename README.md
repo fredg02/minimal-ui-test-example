@@ -1,4 +1,4 @@
-#Minimal UI test example project
+# Minimal UI test example project
 
 This is a minimal UI test example to quickly test issues with running UI tests in a CI environment.
 
