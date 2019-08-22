@@ -5,13 +5,17 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+
+@RunWith(SWTBotJunit4ClassRunner.class)
 public class UserInterfaceTest {
     private final SWTWorkbenchBot bot = new SWTWorkbenchBot();
 
-    @Test
+    @Test 
     public void test() {
         // now lets find a view part
         SWTBotView viewById = bot.viewById("foo.bar.swtbot.app.view");
@@ -21,7 +25,7 @@ public class UserInterfaceTest {
         SWTBotText textWithLabel = bot.textWithLabel("My Label");
         // Set the focus and write a text into the text field
         textWithLabel.setFocus();
-        assertEquals("This is my text", textWithLabel.getText());
+        assertEquals("This is my dtext", textWithLabel.getText());
         textWithLabel.selectAll();
         textWithLabel.typeText("Java rules them all");
         assertEquals("Java rules them all", textWithLabel.getText());
