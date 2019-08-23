@@ -1,0 +1,32 @@
+pipeline {
+	agent {
+		kubernetes {
+			label 'ui-test'
+		}
+	}
+	tools {
+		maven 'apache-maven-latest'
+		jdk 'oracle-jdk8-latest'
+	}
+	stages {
+		stage('Checkout') {
+			steps {
+				checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[refspec: 'refs/heads/master', url: 'https://github.com/fredg02/minimal-ui-test-example.git']]])
+			}
+		}
+		stage('Build') {
+			steps {
+				wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
+					sh 'metacity --sm-disable --replace 2> metacity.err &'
+					sh 'mvn clean verify -B -f foo.bar.swtbot-parent/pom.xml -Dmaven.test.failure.ignore'
+				}
+			}
+			post {
+				always {
+					archiveArtifacts artifacts: '**/screenshots/*.jpeg', fingerprint: false
+					junit '**/target/surefire-reports/*.xml'
+				}
+			}
+		}
+	}
+}
