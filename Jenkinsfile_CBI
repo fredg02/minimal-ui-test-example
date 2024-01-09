@@ -33,11 +33,6 @@ spec:
 		jdk 'oracle-jdk8-latest'
 	}
 	stages {
-		stage('Checkout') {
-			steps {
-				checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[refspec: 'refs/heads/main', url: 'https://github.com/fredg02/minimal-ui-test-example.git']]])
-			}
-		}
 		stage('Build') {
 			steps {
 				wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
