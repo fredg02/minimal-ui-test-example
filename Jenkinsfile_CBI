@@ -27,6 +27,7 @@ spec:
     persistentVolumeClaim:
       claimName: tools-claim-jiro-cbi
 """
+	  }
 	}
 	tools {
 		maven 'apache-maven-latest'
