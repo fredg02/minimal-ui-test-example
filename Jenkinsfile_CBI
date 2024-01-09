@@ -1,8 +1,32 @@
 pipeline {
 	agent {
-		kubernetes {
-			label 'centos-8'
-		}
+      kubernetes {
+        label 'ubuntu-22.04'
+        yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: maven
+    image: fr3d:ubuntu-22.04:0.0.1
+    command:
+    - cat
+    tty: true
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+      requests:
+        memory: "2Gi"
+        cpu: "1"
+    volumeMounts:
+    - name: tools
+      mountPath: /opt/tools
+  volumes:
+  - name: tools
+    persistentVolumeClaim:
+      claimName: tools-claim-jiro-cbi
+"""
 	}
 	tools {
 		maven 'apache-maven-latest'
