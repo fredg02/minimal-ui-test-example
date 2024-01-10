@@ -1,5 +1,5 @@
 pipeline {
-	agent {
+  agent {
       kubernetes {
         label 'ubuntu-22.04'
         yaml """
@@ -7,7 +7,7 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: maven
+  - name: ubuntu
     image: fr3d/ubuntu-22.04:0.0.1
     command:
     - cat
@@ -28,26 +28,28 @@ spec:
     persistentVolumeClaim:
       claimName: tools-claim-jiro-cbi
 """
-	  }
-	}
-	tools {
-		maven 'apache-maven-latest'
-		jdk 'oracle-jdk8-latest'
-	}
-	stages {
-		stage('Build') {
-			steps {
-				wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
-					sh 'metacity --sm-disable --replace 2> metacity.err &'
-					sh 'mvn clean verify -B -f foo.bar.swtbot-parent/pom.xml -Dmaven.test.failure.ignore'
-				}
-			}
-			post {
-				always {
-					archiveArtifacts artifacts: '**/screenshots/*.jpeg', fingerprint: false
-					junit '**/target/surefire-reports/*.xml'
-				}
-			}
-		}
-	}
+    }
+  }
+  tools {
+    maven 'apache-maven-latest'
+    jdk 'oracle-jdk8-latest'
+  }
+  stages {
+    stage('Build') {
+      steps {
+        container('ubuntu') {
+          wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
+            sh 'metacity --sm-disable --replace 2> metacity.err &'
+            sh 'mvn clean verify -B -f foo.bar.swtbot-parent/pom.xml -Dmaven.test.failure.ignore'
+          }
+        }
+      }
+      post {
+        always {
+          archiveArtifacts artifacts: '**/screenshots/*.jpeg', fingerprint: false
+          junit '**/target/surefire-reports/*.xml'
+        }
+      }
+    }
+  }
 }
